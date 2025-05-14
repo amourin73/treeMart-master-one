@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreeMart - Discover, Buy & Sell Trees</title>
+    <meta name="description" content="The best marketplace for trees. Buy & sell trees with ease at TreeMart.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #60ad5e;
+            --primary-dark: #005005;
+            --secondary: #ff9800;
+            --secondary-light: #ffc947;
+            --secondary-dark: #c66900;
+            --text: #fdfcfc;
+            --text-light: #757575;
+            --bg-light: #f9f7f3;
+            --white: #b5b5b5;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #81c784;
+                --primary-light: #b2fab4;
+                --primary-dark: #0f2533;
+                --text: #f5f5f5;
+                --text-light: #bdbdbd;
+                --bg-light: #1e1e1e;
+                --white: #6a6a6a;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 15px 0;
+        }
+        
+        .header-scrolled {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(246, 245, 245, 0.3);
+            font-family: 'Playfair Display', serif;
+            transition: var(--transition);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .header-scrolled .logo {
+            color: var(--primary);
+            text-shadow: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .nav-links a {
+            color: var(--text);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--white);
+            margin: 5px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .mobile-menu div {
+            background-color: var(--text);
+        }
+        
+        .search-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-left: 20px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-container {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px 15px;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            width: 0;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-input {
+            color: var(--text);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .header-scrolled .search-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-container:focus-within {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .header-scrolled .search-container:focus-within {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container:focus-within .search-input {
+            width: 200px;
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-btn {
+            color: var(--text);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3)), 
+                url('https://pixabay.com/get/g704b4484b330d20b4bc2510cbc33a3319d96872663ddd4a41b8b52908f2d333c64037088a8e72811bd994dfc5ac9cdb0dcde06176b44a93bdbffe9e7c98e7369_1280.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            color: var(--white);
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(72, 80, 81, 0.84);
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero-title span {
+            color: var(--secondary);
+        }
+        
+        .hero-subtitle {
+            color: rgba(209, 208, 208, 0.8);
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 40px;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            animation: fadeInUp 1s ease-out 0.4s;
+            animation-fill-mode: both;
+        }
+        
+        .hero-shape {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+        }
+        
+        /* Featured Section */
+        .featured-section {
+            padding: 100px 0 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            height: 4px;
+            width: 70px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .tree-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tree-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .tree-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 300%);
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        .tree-card:hover:before {
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 100%);
+        }
+        
+        .card-image {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .tree-card:hover .card-image {
+            transform: scale(1.05);
+        }
+        
+        .card-content {
+            padding: 25px 20px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        
+        .tree-card:hover .card-title {
+            color: var(--primary-dark);
+        }
+        
+        .card-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-rating i {
+            color: var(--secondary);
+            margin-right: 5px;
+        }
+        
+        .card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 70px 0;
+            background-color: var(--white);
+        }
+        
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .feature-box {
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-text {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-shape {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 25%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 0);
+        }
+        
+        .cta-shape-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20%;
+            height: 100%;
+            background: rgba(255,255,255,0.07);
+            clip-path: polygon(0 0, 100% 100%, 0 100%);
+        }
+        
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+        }
+        
+        .cta-text {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            height: 2px;
+            width: 40px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .footer-about p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes floatAnimation {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-logo {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .loading-logo span {
+            color: var(--secondary);
+        }
+        
+        .loading-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            margin: 0 auto 30px;
+        }
+        
+        .loading-leaf {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50% 0 50% 50%;
+            transform-origin: 100% 0;
+        }
+        
+        .loading-leaf:nth-child(1) {
+            left: 15px;
+            top: 0;
+            transform: rotate(45deg);
+            animation: leafAnimation 2s infinite ease-in-out;
+        }
+        
+        .loading-leaf:nth-child(2) {
+            left: 15px;
+            top: 30px;
+            transform: rotate(135deg);
+            animation: leafAnimation 2s infinite ease-in-out 0.5s;
+        }
+        
+        .loading-text {
+            color: var(--text);
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes leafAnimation {
+            0%, 100% {
+                transform-origin: 100% 0;
+            }
+            50% {
+                transform-origin: 100% 0;
+                transform: rotate(90deg) scale(1.2);
+            }
+        }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                height: calc(100vh - 70px);
+                width: 80%;
+                max-width: 300px;
+                background: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: right 0.3s ease-in;
+                box-shadow: -5px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 0 0 20px 0;
+            }
+            
+            .nav-links a {
+                color: var(--text) !important;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu {
+                display: block;
+                z-index: 100;
+            }
+            
+            .search-container {
+                display: none;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-title {
+                text-align: center;
+            }
+            
+            .hero-content {
+                text-align: center;
+            }
+            
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://lib.youware.com/youware-lib.1747145198.js" id="yourware-lib"></script></head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">Tree<span>Mart</span></div>
+            <div class="loading-icon">
+                <div class="loading-leaf"></div>
+                <div class="loading-leaf"></div>
+            </div>
+            <div class="loading-text">GROWING YOUR EXPERIENCE...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="container navbar">
+            <div class="logo">Tree<span>Mart</span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                
+{% if user.is_authenticated %}
+    <li><a href="{% url 'inbox' %}">Chat</a></li>
+    <li><a href="{% url 'view_profile' %}">Profile</a></li>
+    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+    
+{% else %}
+    <li><a href="{% url 'signup' %}" >Sign Up</a></li>
+    <li><a href="{% url 'signin' %}" >Sign In</a></li>
+{% endif %}
+                <li><a href="{% url 'weather' %}" class="nav-link">Features</a></li>
+            </ul>
+<div class="search-container">
+    <form method="GET" action="{% url 'tree_list' %}" class="search-form">
+        <div class="search-input-group">
+            <input type="text" name="q" class="search-input" placeholder="Search trees..." value="{{ request.GET.q }}">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </header>
+    
+    <style>
+    /* Search Form Styles */
+    .search-container {
+        margin-left: 30px;
+        transition: var(--transition);
+    }
+
+    .search-form {
+        position: relative;
+    }
+
+    .search-input-group {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50px;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input-group {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 10px 20px;
+        color: var(--white);
+        font-family: 'Poppins', sans-serif;
+        width: 200px;
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input {
+        color: var(--text);
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input::placeholder {
+        color: var(--text-light);
+    }
+
+    .search-btn {
+        background: transparent;
+        border: none;
+        color: var(--white);
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-scrolled .search-btn {
+        color: var(--text);
+    }
+
+    .search-container:focus-within .search-input-group {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .header-scrolled .search-container:focus-within .search-input-group {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Search Dropdown (for autocomplete) */
+    .search-results-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--white);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--box-shadow);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .search-container:focus-within .search-results-dropdown {
+        display: block;
+    }
+
+    .search-result-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .search-result-item:hover {
+        background: var(--gray-light);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+        .search-container {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            right: 20px;
+            margin-left: 0;
+            z-index: 100;
+        }
+
+        .search-container.active {
+            display: block;
+        }
+
+        .search-input-group {
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .search-input {
+            padding: 8px 15px;
+        }
+    }
+</style>
+
+<!-- Add this JavaScript for mobile search toggle -->
+<script>
+    // Mobile search toggle
+    const searchToggle = document.createElement('div');
+    searchToggle.className = 'mobile-search-toggle';
+    searchToggle.innerHTML = '<i class="fas fa-search"></i>';
+    document.querySelector('.navbar').appendChild(searchToggle);
+
+    const searchContainer = document.querySelector('.search-container');
+    searchToggle.addEventListener('click', function() {
+        searchContainer.classList.toggle('active');
+    });
+
+    // Close search when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchContainer.contains(e.target) {
+            searchContainer.classList.remove('active');
+        }
+    });
+
+    // Prevent closing when clicking inside search
+    searchContainer.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+</script>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Discover, Buy, and Sell <span>Trees</span></h1>
+            <p class="hero-subtitle">Find the perfect trees for your space from our curated collection or sell your own to our community of tree enthusiasts.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'tree_list' %}" class="btn btn-primary"><i class="fas fa-leaf"></i> Explore Trees</a>
+                <a href="{% url 'weather' %}" class="btn btn-secondary"><i class="fas fa-cloud-sun"></i> Check Weather</a>
+                <a href="{% url 'inbox' %}" class="btn btn-outline"><i class="fas fa-comments"></i> Open Chat</a>
+            </div>
+        </div>
+        <svg class="hero-shape" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#f9f7f3" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,122.7C384,128,480,160,576,160C672,160,768,128,864,128C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </section>
+<!-- Featured Trees Section -->
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Trees</h2>
+        <div class="cards-container">
+            {% for tree in most_rated_trees %}
+            <div class="tree-card">
+                <div class="card-image-container">
+                    <img src="{{ tree.image.url }}" alt="{{ tree.name }}" class="card-image">
+                    <div class="card-overlay">
+                        <a href="{% url 'add-to-cart' t_id=tree.id %}" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ tree.name }}</h3>
+                        <div class="card-price">${{ tree.price }}</div>
+                    </div>
+{#                    <div class="card-rating">#}
+{#                        <i class="fas fa-star"></i>#}
+{#                        <i class="fas fa-star"></i>#}
+{#                        <i class="fas fa-star"></i>#}
+{#                        <i class="fas fa-star"></i>#}
+{#                        <i class="fas fa-star-half-alt"></i>#}
+{#                        <span class="rating-count">(24)</span>#}
+{#                    </div>#}
+                    <div class="card-actions">
+                        <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                        <button class="quick-view-btn">Quick View</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Add these styles to your existing CSS */
+    .featured-section {
+        padding: 100px 0;
+        background-color: var(--bg-light);
+    }
+    
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    
+    .tree-card {
+        background: var(--white);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: var(--transition);
+        position: relative;
+    }
+    
+    .tree-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .card-image-container {
+        height: 250px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .tree-card:hover .card-image {
+        transform: scale(1.05);
+    }
+    
+    .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .tree-card:hover .card-overlay {
+        opacity: 1;
+    }
+    
+    .card-content {
+        padding: 20px;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        color: var(--primary-dark);
+        margin: 0;
+    }
+    
+    .card-price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+    
+    .card-rating {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .card-rating i {
+        color: var(--secondary);
+        font-size: 0.9rem;
+        margin-right: 2px;
+    }
+    
+    .card-rating .rating-count {
+        color: var(--text-light);
+        font-size: 0.8rem;
+        margin-left: 5px;
+    }
+    
+    .card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .wishlist-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-light);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .wishlist-btn:hover {
+        color: var(--secondary);
+        transform: scale(1.1);
+    }
+    
+    .quick-view-btn {
+        background: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .quick-view-btn:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .cards-container {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        
+        .card-image-container {
+            height: 200px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .cards-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+    {#col-md-4">#}
+{#        <div class="card">#}
+{#            <img src="{{ tree.image.url }}" class="card-img-top" alt="{{ tree.name }}">#}
+{#            <div class="card-body">#}
+{#                <h3 class="card-title">{{ tree.name }}</h3>#}
+{#                <div class="card-price">${{ tree.price }}</div>#}
+{#                <a href="{% url 'add-to-cart' t_id=tree.id %}" class="btn btn-primary">Buy Now</a>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+
+{#    <!-- Features Section -->#}
+{#    <section class="features-section">#}
+{#        <div class="container">#}
+{#            <h2 class="section-title">Why Choose TreeMart?</h2>#}
+{#            <div class="features-container">#}
+{#                <div class="feature-box">#}
+{#                    <div class="feature-icon">#}
+{#                        <i class="fas fa-seedling"></i>#}
+{#                    </div>#}
+{#                    <h3 class="feature-title">High Quality Trees</h3>#}
+{#                    <p class="feature-text">All our trees are carefully selected and grown in optimal conditions to ensure they thrive in your garden.</p>#}
+{#                </div>#}
+{#                #}
+{#                <div class="feature-box">#}
+{#                    <div class="feature-icon">#}
+{#                        <i class="fas fa-truck"></i>#}
+{#                    </div>#}
+{#                    <h3 class="feature-title">Fast & Safe Delivery</h3>#}
+{#                    <p class="feature-text">Our specialized delivery ensures your trees arrive in perfect condition, ready for planting.</p>#}
+{#                </div>#}
+{#                #}
+{#                <div class="feature-box">#}
+{#                    <div class="feature-icon">#}
+{#                        <i class="fas fa-users"></i>#}
+{#                    </div>#}
+{#                    <h3 class="feature-title">Community Support</h3>#}
+{#                    <p class="feature-text">Join our community of tree enthusiasts for tips, advice, and support on growing your trees.</p>#}
+{#                </div>#}
+{#                #}
+{#                <div class="feature-box">#}
+{#                    <div class="feature-icon">#}
+{#                        <i class="fas fa-hand-holding-heart"></i>#}
+{#                    </div>#}
+{#                    <h3 class="feature-title">Eco-Friendly</h3>#}
+{#                    <p class="feature-text">For every tree purchased, we plant another one in areas affected by deforestation.</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+{##}
+{#    <!-- CTA Section -->#}
+{#    <section class="cta-section">#}
+{#        <div class="cta-shape"></div>#}
+{#        <div class="cta-shape-2"></div>#}
+{#        <div class="container">#}
+{#            <div class="cta-content">#}
+{#                <h2 class="cta-title">Ready to Transform Your Space?</h2>#}
+{#                <p class="cta-text">Whether you're looking for shade trees, fruit trees, or ornamentals, TreeMart has the perfect match for your landscape.</p>#}
+{#                <a href="#" class="btn btn-secondary">Browse Collection</a>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h3>About TreeMart</h3>
+                    <p>TreeMart is dedicated to providing high-quality trees and plants to enhance your outdoor spaces while promoting environmental sustainability.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+{#                    <h3>Quick Links</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="#">Home</a></li>#}
+{#                        <li><a href="#">Tree List</a></li>#}
+{#                        <li><a href="#">Plant Guide</a></li>#}
+{#                        <li><a href="#">Chat</a></li>#}
+{#                        <li><a href="#">Profile</a></li>#}
+{#                    </ul>#}
+                </div>
+                
+{#                <div class="footer-column">#}
+{#                    <h3>Support</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="#">Contact Us</a></li>#}
+{#                        <li><a href="#">FAQs</a></li>#}
+{#                        <li><a href="#">Shipping Information</a></li>#}
+{#                        <li><a href="#">Returns & Exchanges</a></li>#}
+{#                        <li><a href="#">Payment Methods</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+                
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Green Raod, Dhaka</li>
+                        <li><i class="fas fa-phone"></i> 01817065225</li>
+                        <li><i class="fas fa-envelope"></i> info@treemart.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.visibility = 'hidden';
+            }, 1500);
+        });
+        
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileMenu.classList.toggle('toggle');
+        });
+        
+        // Sticky Header
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+        
+        // Add fade-in animations
+        const cards = document.querySelectorAll('.tree-card');
+        
+        window.addEventListener('scroll', function() {
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (cardTop < windowHeight * 0.8) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

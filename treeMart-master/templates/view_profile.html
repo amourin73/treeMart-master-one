@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | TreeMart</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1c3325;
+            --secondary: #8c6e4a;
+            --accent: #e7b25f;
+            --light: #f4f1eb;
+            --dark: #1b2d22;
+            --text: #333;
+            --text-light: #757575;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        /* Light/Dark Mode */
+        .light-mode {
+            --bg-primary: var(--light);
+            --text-primary: var(--dark);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --text-primary: var(--light);
+            --bg-card: rgba(30, 45, 35, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+
+        .logo-tree {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(-45deg);
+            position: relative;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-left: 10px;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--light);
+            color: var(--light);
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            margin-left: 2rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 150px 0 100px;
+            min-height: 100vh;
+            background-color: var(--bg-primary);
+        }
+        
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+        }
+        
+        .profile-sidebar {
+            background: var(--primary);
+            padding: 40px;
+            text-align: center;
+            color: var(--light);
+        }
+        
+        .profile-picture {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--accent);
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .profile-username {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .profile-user-type {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .profile-nav {
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .profile-nav li {
+            margin-bottom: 15px;
+        }
+        
+        .profile-nav a {
+            color: var(--light);
+            font-weight: 500;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: var(--transition);
+            text-align: left;
+        }
+        
+        .profile-nav a:hover, .profile-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+        
+        .profile-nav i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .profile-content {
+            padding: 40px;
+            background: var(--bg-card);
+        }
+        
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 20px;
+        }
+        
+        .profile-title {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .profile-info-item {
+            margin-bottom: 20px;
+        }
+        
+        .profile-info-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .profile-info-value {
+            background: rgba(0,0,0,0.03);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .profile-bio {
+            line-height: 1.7;
+            padding: 15px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--light);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: var(--primary);
+            color: var(--light);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-sidebar {
+                padding: 30px 20px;
+            }
+            
+            .profile-content {
+                padding: 30px 20px;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Header -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="logo-tree"></div>
+                </div>
+                <div class="logo-text">Tree<span>Mart</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'inbox' %}">Chat</a></li>
+                    <li><a href="{% url 'view_profile' %}" class="active">Profile</a></li>
+                    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+                {% else %}
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'signin' %}">Sign In</a></li>
+                {% endif %}
+            </ul>
+            <button class="theme-toggle">Dark Mode</button>
+        </div>
+    </header>
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}" class="profile-picture">
+                    {% else %}
+                        <div class="profile-picture">
+                            <i class="fas fa-user-circle" style="font-size: 180px; color: var(--light);"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <h2 class="profile-username">{{ user.username }}</h2>
+                    <span class="profile-user-type">{{ profile.get_user_type_display }}</span>
+                    
+                    <ul class="profile-nav">
+                        <li><a href="{% url 'view_profile' %}" class="active"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a href="{% url 'edit_profile' %}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                        <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+                        <li><a href="{% url 'inbox' %}"><i class="fas fa-inbox"></i> Messages</a></li>
+                        <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+                
+                <div class="profile-content">
+                    <div class="profile-header">
+                        <h1 class="profile-title">Profile Information</h1>
+                        <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Username</span>
+                        <div class="profile-info-value">{{ user.username }}</div>
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Email Address</span>
+                        <div class="profile-info-value">{{ user.email }}</div>
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Location</span>
+                        <div class="profile-info-value">
+                            {% if profile.location %}
+                                {{ profile.location }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Member Since</span>
+                        <div class="profile-info-value">{{ user.date_joined|date:"F d, Y" }}</div>
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">About Me</span>
+                        <div class="profile-bio">
+                            {% if profile.bio %}
+                                {{ profile.bio }}
+                            {% else %}
+                                No bio yet. Tell us about yourself!
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <a href="{% url 'logout' %}" class="btn btn-secondary">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        <a href="{% url 'tree_list' %}" class="btn btn-outline">
+                            <i class="fas fa-leaf"></i> Browse Trees
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+{#        <div class="container">#}
+{#            <div class="footer-content">#}
+{#                <div class="footer-column">#}
+{#                    <h3>TreeMart</h3>#}
+{#                    <p>Bringing nature closer to your home with premium quality trees and exceptional service since 2020.</p>#}
+{#                    <div class="social-icons">#}
+{#                        <a href="#"><i class="fab fa-facebook-f"></i></a>#}
+{#                        <a href="#"><i class="fab fa-twitter"></i></a>#}
+{#                        <a href="#"><i class="fab fa-instagram"></i></a>#}
+{#                        <a href="#"><i class="fab fa-pinterest-p"></i></a>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Quick Links</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="{% url 'homepage' %}">Home</a></li>#}
+{#                        <li><a href="{% url 'tree_list' %}">Tree List</a></li>#}
+{#                        <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Support</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="#">FAQ</a></li>#}
+{#                        <li><a href="#">Shipping Policy</a></li>#}
+{#                        <li><a href="#">Contact Us</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Contact</h3>#}
+{#                    <ul>#}
+{#                        <li><i class="fas fa-map-marker-alt"></i> 123 Green Road, Dhaka</li>#}
+{#                        <li><i class="fas fa-phone"></i> 01817065225</li>#}
+{#                        <li><i class="fas fa-envelope"></i> info@treemart.com</li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="copyright">
+                <p>&copy; 2023 TreeMart. All rights reserved.</p>
+            </div>
+        
+    </footer>
+
+    <script>
+        // Dark/Light theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            if (document.body.classList.contains('light-mode')) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = 'Light Mode';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>

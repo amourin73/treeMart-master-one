@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your Cart | TreeMart</title>
+    <meta name="description" content="Your shopping cart at TreeMart - Your one-stop platform for buying and selling trees.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1c3325;
+            --secondary: #8c6e4a;
+            --accent: #e7b25f;
+            --light: #f4f1eb;
+            --dark: #1b2d22;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        /* Light/Dark Mode */
+        .light-mode {
+            --bg-primary: var(--light);
+            --text-primary: var(--dark);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --text-primary: var(--light);
+            --bg-card: rgba(30, 45, 35, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 8%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: var(--bg-primary);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .logo-tree {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(-45deg);
+            position: relative;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-left: 15px;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 400;
+            letter-spacing: 1px;
+            position: relative;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link:hover:after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--text-primary);
+            color: var(--text-primary);
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-primary);
+            margin: 5px;
+            transition: var(--transition);
+        }
+
+        /* Search Form */
+        .search-container {
+            margin-left: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            background: rgba(231, 178, 95, 0.1);
+            border-radius: 30px;
+            padding: 5px 15px;
+            transition: var(--transition);
+        }
+
+        .search-form:focus-within {
+            background: rgba(231, 178, 95, 0.2);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: var(--secondary);
+            opacity: 0.7;
+        }
+
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        /* Cart Section */
+        .cart-section {
+            padding: 180px 8% 100px;
+            min-height: 100vh;
+        }
+
+        .cart-container {
+            background: var(--bg-card);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cart-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background: var(--accent);
+            top: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .cart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .cart-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        .cart-table th {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .cart-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(140, 110, 74, 0.2);
+            vertical-align: middle;
+        }
+
+        .cart-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cart-table tr:hover {
+            background: rgba(231, 178, 95, 0.05);
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .increase-btn {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .decrease-btn {
+            background: var(--secondary);
+            color: var(--light);
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: var(--light);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .cart-total {
+            text-align: right;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 40px;
+        }
+
+        .cart-total span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .btn {
+            font-family: 'Poppins', sans-serif;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--dark);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: var(--light);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-cart-text {
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--light);
+            padding: 50px 8%;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            color: var(--light);
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            bottom: -10px;
+            left: 0;
+        }
+
+        .footer-about p {
+            color: rgba(244, 241, 235, 0.7);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(244, 241, 235, 0.1);
+            color: var(--light);
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--accent);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(244, 241, 235, 0.7);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            color: rgba(244, 241, 235, 0.5);
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid rgba(244, 241, 235, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .cart-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            nav {
+                padding: 20px 5%;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 90px;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: calc(100vh - 90px);
+                background: var(--bg-card);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px var(--shadow-color);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .search-container {
+                display: none;
+            }
+            
+            .cart-section {
+                padding: 150px 5% 80px;
+            }
+            
+            .cart-container {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cart-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .cart-actions {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .cart-container {
+                padding: 30px 20px;
+            }
+            
+            .cart-table th, 
+            .cart-table td {
+                padding: 12px 8px;
+            }
+            
+            .action-btn {
+                margin-right: 5px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">
+                <div class="logo-tree"></div>
+            </div>
+            <div class="logo-text">Tree<span>Mart</span></div>
+        </div>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+            <a href="{% url 'tree_list' %}" class="nav-link">Tree List</a>
+            <a href="{% url 'plant_guide' %}" class="nav-link">Plant Guide</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'inbox' %}" class="nav-link">Chat</a>
+                <a href="{% url 'view_profile' %}" class="nav-link">Profile</a>
+                <a href="{% url 'view_cart' %}" class="nav-link">Cart</a>
+            {% else %}
+                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                <a href="{% url 'signin' %}" class="nav-link">Sign In</a>
+            {% endif %}
+            <a href="{% url 'weather' %}" class="nav-link">Features</a>
+        </div>
+        
+        <div class="search-container">
+            <form method="GET" action="{% url 'tree_list' %}" class="search-form">
+                <input type="text" name="q" class="search-input" placeholder="Search trees..." value="{{ request.GET.q }}">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+        
+        <button class="theme-toggle">Dark Mode</button>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-container">
+                <h2 class="cart-title">Your Shopping Cart</h2>
+                
+                {% if cart_items %}
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td><strong>{{ item.tree.name }}</strong></td>
+                                <td>${{ item.tree.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ item.subtotal }}</td>
+                                <td>
+                                    <button onclick="window.location.href='{% url 'cart-increase' item.tree.id %}'" class="action-btn increase-btn">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <button onclick="window.location.href='{% url 'cart-decrease' item.tree.id %}'" class="action-btn decrease-btn">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button onclick="window.location.href='{% url 'cart-remove' item.tree.id %}'" class="action-btn remove-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    <div class="cart-total">
+                        <strong>Total Price: <span>${{ total_price }}</span></strong>
+                    </div>
+                    
+                    <div class="cart-actions">
+                        <a href="{% url 'tree_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+                        <a href="{% url 'place_order' %}" class="btn btn-primary">
+                            <i class="fas fa-shopping-bag"></i> Place Order
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <p class="empty-cart-text">Your cart is empty</p>
+                        <a href="{% url 'tree_list' %}" class="btn btn-primary">
+                            <i class="fas fa-leaf"></i> Browse Trees
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h3>About TreeMart</h3>
+                    <p>TreeMart is dedicated to providing high-quality trees and plants to enhance your outdoor spaces while promoting environmental sustainability.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'homepage' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{% url 'tree_list' %}"><i class="fas fa-chevron-right"></i> Tree List</a></li>
+                        <li><a href="{% url 'plant_guide' %}"><i class="fas fa-chevron-right"></i> Plant Guide</a></li>
+                        <li><a href="{% url 'weather' %}"><i class="fas fa-chevron-right"></i> Weather</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 Green Road, Dhaka</a></li>
+                        <li><a href="tel:+8801817065225"><i class="fas fa-phone"></i> 01817065225</a></li>
+                        <li><a href="mailto:info@treemart.com"><i class="fas fa-envelope"></i> info@treemart.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Dark/Light theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            if (document.body.classList.contains('light-mode')) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = 'Light Mode';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>

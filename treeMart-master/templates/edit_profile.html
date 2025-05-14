@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | TreeMart</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1c3325;
+            --secondary: #8c6e4a;
+            --accent: #e7b25f;
+            --light: #f4f1eb;
+            --dark: #1b2d22;
+            --text: #333;
+            --text-light: #757575;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        /* Light/Dark Mode */
+        .light-mode {
+            --bg-primary: var(--light);
+            --text-primary: var(--dark);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --text-primary: var(--light);
+            --bg-card: rgba(30, 45, 35, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+
+        .logo-tree {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(-45deg);
+            position: relative;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-left: 10px;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--light);
+            color: var(--light);
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            margin-left: 2rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Edit Profile Section */
+        .edit-profile-section {
+            padding: 150px 0 100px;
+            min-height: 100vh;
+            background-color: var(--bg-primary);
+        }
+        
+        .edit-profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 40px;
+        }
+        
+        .edit-profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .edit-profile-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .edit-profile-subtitle {
+            color: var(--text-light);
+        }
+        
+        .profile-form .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .profile-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .profile-form input,
+        .profile-form textarea,
+        .profile-form select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+        
+        .profile-form input:focus,
+        .profile-form textarea:focus,
+        .profile-form select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(231, 178, 95, 0.3);
+        }
+        
+        .profile-picture-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            display: block;
+            margin: 15px auto;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--light);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .edit-profile-container {
+                padding: 30px 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Header -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="logo-tree"></div>
+                </div>
+                <div class="logo-text">Tree<span>Mart</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'inbox' %}">Chat</a></li>
+                    <li><a href="{% url 'view_profile' %}">Profile</a></li>
+                    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+                {% else %}
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'signin' %}">Sign In</a></li>
+                {% endif %}
+            </ul>
+            <button class="theme-toggle">Dark Mode</button>
+        </div>
+    </header>
+
+    <!-- Edit Profile Section -->
+    <section class="edit-profile-section">
+        <div class="container">
+            <div class="edit-profile-container">
+                <div class="edit-profile-header">
+                    <h1 class="edit-profile-title">Edit Your Profile</h1>
+                    <p class="edit-profile-subtitle">Update your personal information and preferences</p>
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user_type">Account Type</label>
+                        <select id="user_type" name="user_type" disabled>
+                            <option>{{ profile.get_user_type_display }}</option>
+                        </select>
+                        <small style="color: var(--text-light);">Contact support to change account type</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" value="{{ profile.location }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">About You</label>
+                        <textarea id="bio" name="bio" rows="4">{{ profile.bio }}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profile_picture">Profile Picture</label>
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Current Profile Picture" class="profile-picture-preview">
+                        {% else %}
+                            <div class="profile-picture-preview">
+                                <i class="fas fa-user-circle" style="font-size: 120px; color: var(--text-light);"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-actions">
+                        <a href="{% url 'view_profile' %}" class="btn btn-outline">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+{#                    <h3>TreeMart</h3>#}
+{#                    <p>Bringing nature closer to your home with premium quality trees and exceptional service since 2020.</p>#}
+{#                    <div class="social-icons">#}
+{#                        <a href="#"><i class="fab fa-facebook-f"></i></a>#}
+{#                        <a href="#"><i class="fab fa-twitter"></i></a>#}
+{#                        <a href="#"><i class="fab fa-instagram"></i></a>#}
+{#                        <a href="#"><i class="fab fa-pinterest-p"></i></a>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Quick Links</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="{% url 'homepage' %}">Home</a></li>#}
+{#                        <li><a href="{% url 'tree_list' %}">Tree List</a></li>#}
+{#                        <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Support</h3>#}
+{#                    <ul>#}
+{#                        <li><a href="#">FAQ</a></li>#}
+{#                        <li><a href="#">Shipping Policy</a></li>#}
+{#                        <li><a href="#">Contact Us</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#                <div class="footer-column">#}
+{#                    <h3>Contact</h3>#}
+{#                    <ul>#}
+{#                        <li><i class="fas fa-map-marker-alt"></i> 123 Green Road, Dhaka</li>#}
+{#                        <li><i class="fas fa-phone"></i> 01817065225</li>#}
+{#                        <li><i class="fas fa-envelope"></i> info@treemart.com</li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="copyright">
+                <p>&copy; 2023 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark/Light theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            if (document.body.classList.contains('light-mode')) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = 'Light Mode';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = 'Dark Mode';
+            }
+        });
+
+        // Profile picture preview
+        const profilePictureInput = document.getElementById('profile_picture');
+        const profilePicturePreview = document.querySelector('.profile-picture-preview');
+        
+        if (profilePictureInput && profilePicturePreview) {
+            profilePictureInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        if (profilePicturePreview.tagName === 'IMG') {
+                            profilePicturePreview.src = event.target.result;
+                        } else {
+                            // Replace the icon with an image
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.className = 'profile-picture-preview';
+                            img.alt = 'Profile Picture Preview';
+                            profilePicturePreview.parentNode.replaceChild(img, profilePicturePreview);
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

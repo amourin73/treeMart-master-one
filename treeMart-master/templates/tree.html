@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreeMart - Tree List</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Base Styles - Matching Homepage */
+        :root {
+            --primary: #2e7d32; /* Dark green from homepage */
+            --primary-light: #60ad5e; /* Medium green */
+            --primary-dark: #005005; /* Darker green */
+            --secondary: #ff9800; /* Orange from homepage */
+            --secondary-light: #ffc947; /* Light orange */
+            --secondary-dark: #c66900; /* Dark orange */
+            --text: #333333; /* Dark text */
+            --text-light: #757575; /* Light text */
+            --bg-light: #f9f7f3; /* Light background from homepage */
+            --white: #ffffff; /* Pure white */
+            --gray-light: #f5f5f5; /* Light gray */
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        /* Dark Mode - Matching Homepage */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #81c784; /* Light green */
+                --primary-light: #b2fab4; /* Very light green */
+                --primary-dark: #1d1f20; /* Dark blue-green */
+                --text: #f5f5f5; /* Light text */
+                --text-light: #bdbdbd; /* Lighter text */
+                --bg-light: #1e1e1e; /* Dark background */
+                --white: #989696; /* Dark gray */
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-outline-danger {
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+        }
+        
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-content-between {
+            justify-content: space-between;
+        }
+        
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        
+        .mt-3 {
+            margin-top: 1rem;
+        }
+        
+        /* Header & Navigation - Matching Homepage */
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 15px 0;
+            background-color: var(--primary-dark);
+        }
+        
+        .header-scrolled {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(246, 245, 245, 0.3);
+            font-family: 'Playfair Display', serif;
+            transition: var(--transition);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .header-scrolled .logo {
+            color: var(--primary);
+            text-shadow: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .nav-links a {
+            color: var(--text);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--white);
+            margin: 5px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .mobile-menu div {
+            background-color: var(--text);
+        }
+        
+        .search-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-left: 20px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-container {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px 15px;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            width: 0;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-input {
+            color: var(--text);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .header-scrolled .search-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-container:focus-within {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .header-scrolled .search-container:focus-within {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container:focus-within .search-input {
+            width: 200px;
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-btn {
+            color: var(--text);
+        }
+        
+        /* Main Content */
+        .main-section {
+            padding: 150px 0 70px;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--bg-light);
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            height: 4px;
+            width: 70px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .tree-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tree-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .tree-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 300%);
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        .tree-card:hover:before {
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 100%);
+        }
+        
+        .card-image {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .tree-card:hover .card-image {
+            transform: scale(1.05);
+        }
+        
+        .card-content {
+            padding: 25px 20px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            transition: var(--transition);
+            color: var(--primary-dark);
+        }
+        
+        .card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Handwritten Section Styles */
+        .handwritten-section {
+            padding: 80px 0;
+            background-color: var(--bg-light);
+            position: relative;
+        }
+        
+        .handwritten-section:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(249, 247, 243, 0.9);
+            z-index: 0;
+        }
+        
+        .handwritten-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .handwritten-text {
+            flex: 1;
+            padding: 40px;
+            background: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            transform: rotate(-1deg);
+        }
+        
+        .handwritten-text:before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .handwritten-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .handwritten-note {
+            font-family: 'Caveat', cursive;
+            font-size: 1.8rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin-bottom: 30px;
+        }
+        
+        .handwritten-note p {
+            margin-bottom: 20px;
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+        }
+        
+        .signature-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+        
+        /* Footer - Matching Homepage */
+        footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            height: 2px;
+            width: 40px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .footer-about p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                height: calc(100vh - 70px);
+                width: 80%;
+                max-width: 300px;
+                background: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: right 0.3s ease-in;
+                box-shadow: -5px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 0 0 20px 0;
+            }
+            
+            .nav-links a {
+                color: var(--text) !important;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu {
+                display: block;
+                z-index: 100;
+            }
+            
+            .search-container {
+                display: none;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .handwritten-content {
+                flex-direction: column;
+            }
+            
+            .handwritten-text {
+                transform: rotate(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-title {
+                text-align: center;
+            }
+            
+            .main-section {
+                padding-top: 120px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .handwritten-note {
+                font-size: 1.5rem;
+            }
+            
+            .handwritten-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container navbar">
+            <div class="logo">Tree<span>Mart</span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'inbox' %}">Chat</a></li>
+                    <li><a href="{% url 'view_profile' %}">Profile</a></li>
+                    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+                {% else %}
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'signin' %}">Sign In</a></li>
+                {% endif %}
+                <li><a href="{% url 'weather' %}" class="nav-link">Features</a></li>
+            </ul>
+            <div class="search-container">
+                <form method="GET" action="{% url 'tree_list' %}" class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" name="q" class="search-input" placeholder="Search trees..." value="{{ request.GET.q }}">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="main-section">
+        <div class="container">
+            <h2 class="section-title">Our Tree Collection</h2>
+            
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+                <p>Loading trees...</p>
+            </div>
+
+            <!-- Tree Cards -->
+            <div id="treeContainer" class="cards-container">
+                {% for tree in trees %}
+                <div class="tree-card">
+                    <img src="{{ tree.image.url }}" class="card-image" alt="{{ tree.name }}">
+                    <div class="card-content">
+                        <h3 class="card-title">{{ tree.name }}</h3>
+                        <div class="card-price">${{ tree.price }}</div>
+                        <div class="card-actions">
+                            <button onclick="loadTreeDetails({{ tree.id }})" class="btn btn-outline btn-sm">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                            
+                            {% if user.is_authenticated %}
+                                {% if user.profile.is_admin or user.profile.is_seller and tree.seller == user %}
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <a href="{% url 'update-tree' tree.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+                                        <a href="{% url 'delete-tree' tree.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                    </div>
+                                {% elif user.profile.is_buyer %}
+                                    <a href="{% url 'add-to-cart' tree.id %}" class="btn btn-success btn-sm mt-2">Add to Cart</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'signin' %}" class="btn btn-primary btn-sm mt-2">Sign In to Purchase</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center" style="grid-column: 1/-1;">No trees found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Handwritten Section -->
+    <section class="handwritten-section">
+        <div class="container">
+            <div class="handwritten-content">
+                <div class="handwritten-text">
+                    <h2 class="handwritten-title">Our Tree Story</h2>
+                    <div class="handwritten-note">
+                        <p>Every tree in our nursery has a story...</p>
+                        <p>We carefully select each sapling, nurture it with organic care, and watch it grow strong before offering it to you. Our team of passionate arborists hand-writes notes about each tree's unique characteristics, growth patterns, and ideal planting conditions.</p>
+                        <p>When you purchase a tree from TreeMart, you're not just getting a plant - you're getting years of loving care and expert knowledge to help your new green friend thrive in its forever home.</p>
+                    </div>
+                    <div class="signature">
+                        <p class="signature-text">The TreeMart Family</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h3>About TreeMart</h3>
+                    <p>TreeMart is dedicated to providing high-quality trees and plants to enhance your outdoor spaces while promoting environmental sustainability.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'homepage' %}">Home</a></li>
+                        <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                        <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                        <li><a href="{% url 'inbox' %}">Chat</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Green Road, Dhaka</li>
+                        <li><i class="fas fa-phone"></i> 01817065225</li>
+                        <li><i class="fas fa-envelope"></i> info@treemart.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variable to store the currently viewed tree ID in modal
+        let modalTreeId = null;
+        
+        // Initialize modal
+        const treeDetailsModal = new bootstrap.Modal(document.getElementById('treeDetailsModal'));
+        
+        // Function to load tree details via API
+        async function loadTreeDetails(treeId) {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            
+            try {
+                const response = await fetch(`/api/trees/${treeId}/`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const treeData = await response.json();
+                modalTreeId = treeId;
+                
+                // Update modal content
+                document.getElementById('treeModalLabel').textContent = treeData.name;
+                document.getElementById('treeDetailImage').src = treeData.image;
+                document.getElementById('treeDetailName').textContent = treeData.name;
+                document.getElementById('treeDetailCategory').textContent = treeData.category || 'N/A';
+                document.getElementById('tree

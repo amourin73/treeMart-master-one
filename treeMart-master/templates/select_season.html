@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreeMart - Select Season</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #60ad5e;
+            --primary-dark: #005005;
+            --secondary: #ff9800;
+            --secondary-light: #ffc947;
+            --secondary-dark: #c66900;
+            --text: #fdfcfc;
+            --text-light: #757575;
+            --bg-light: #f9f7f3;
+            --white: #b5b5b5;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #81c784;
+                --primary-light: #b2fab4;
+                --primary-dark: #0f2533;
+                --text: #f5f5f5;
+                --text-light: #bdbdbd;
+                --bg-light: #1e1e1e;
+                --white: #6a6a6a;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Navigation - matching homepage */
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 15px 0;
+            background-color: var(--primary-dark);
+        }
+        
+        .header-scrolled {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(246, 245, 245, 0.3);
+            font-family: 'Playfair Display', serif;
+            transition: var(--transition);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .header-scrolled .logo {
+            color: var(--primary);
+            text-shadow: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .nav-links a {
+            color: var(--text);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--white);
+            margin: 5px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .mobile-menu div {
+            background-color: var(--text);
+        }
+        
+        .search-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-left: 20px;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-container {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px 15px;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            width: 0;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-input {
+            color: var(--text);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .header-scrolled .search-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-container:focus-within {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .header-scrolled .search-container:focus-within {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container:focus-within .search-input {
+            width: 200px;
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .header-scrolled .search-btn {
+            color: var(--text);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 20px 100px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            height: 4px;
+            width: 70px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .season-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 50px;
+        }
+
+        .season-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+            color: var(--primary-dark);
+        }
+
+        .season-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .season-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 300%);
+            z-index: -1;
+            transition: var(--transition);
+            border-radius: 15px;
+        }
+        
+        .season-card:hover:before {
+            background: linear-gradient(to bottom, transparent 50%, var(--primary) 100%);
+        }
+
+        .season-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .season-name {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+
+        /* Footer - matching homepage */
+        footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            height: 2px;
+            width: 40px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .footer-about p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                height: calc(100vh - 70px);
+                width: 80%;
+                max-width: 300px;
+                background: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: right 0.3s ease-in;
+                box-shadow: -5px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 0 0 20px 0;
+            }
+            
+            .nav-links a {
+                color: var(--text) !important;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu {
+                display: block;
+                z-index: 100;
+            }
+            
+            .search-container {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding-top: 120px;
+            }
+            
+            .season-list {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container navbar">
+            <div class="logo">Tree<span>Mart</span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                
+{% if user.is_authenticated %}
+    <li><a href="{% url 'inbox' %}">Chat</a></li>
+    <li><a href="{% url 'view_profile' %}">Profile</a></li>
+    <li><a href="{% url 'view_cart' %}">Cart</a></li>
+    
+{% else %}
+    <li><a href="{% url 'signup' %}" >Sign Up</a></li>
+    <li><a href="{% url 'signin' %}" >Sign In</a></li>
+{% endif %}
+                <li><a href="{% url 'weather' %}" class="nav-link">Features</a></li>
+            </ul>
+<div class="search-container">
+    <form method="GET" action="{% url 'tree_list' %}" class="search-form">
+        <div class="search-input-group">
+            <input type="text" name="q" class="search-input" placeholder="Search trees..." value="{{ request.GET.q }}">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </header>
+    
+    <style>
+    /* Search Form Styles */
+    .search-container {
+        margin-left: 30px;
+        transition: var(--transition);
+    }
+
+    .search-form {
+        position: relative;
+    }
+
+    .search-input-group {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50px;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input-group {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 10px 20px;
+        color: var(--white);
+        font-family: 'Poppins', sans-serif;
+        width: 200px;
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input {
+        color: var(--text);
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+        transition: var(--transition);
+    }
+
+    .header-scrolled .search-input::placeholder {
+        color: var(--text-light);
+    }
+
+    .search-btn {
+        background: transparent;
+        border: none;
+        color: var(--white);
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-scrolled .search-btn {
+        color: var(--text);
+    }
+
+    .search-container:focus-within .search-input-group {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .header-scrolled .search-container:focus-within .search-input-group {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Search Dropdown (for autocomplete) */
+    .search-results-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--white);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--box-shadow);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .search-container:focus-within .search-results-dropdown {
+        display: block;
+    }
+
+    .search-result-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .search-result-item:hover {
+        background: var(--gray-light);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+        .search-container {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            right: 20px;
+            margin-left: 0;
+            z-index: 100;
+        }
+
+        .search-container.active {
+            display: block;
+        }
+
+        .search-input-group {
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .search-input {
+            padding: 8px 15px;
+        }
+    }
+</style>
+
+<!-- Add this JavaScript for mobile search toggle -->
+<script>
+    // Mobile search toggle
+    const searchToggle = document.createElement('div');
+    searchToggle.className = 'mobile-search-toggle';
+    searchToggle.innerHTML = '<i class="fas fa-search"></i>';
+    document.querySelector('.navbar').appendChild(searchToggle);
+
+    const searchContainer = document.querySelector('.search-container');
+    searchToggle.addEventListener('click', function() {
+        searchContainer.classList.toggle('active');
+    });
+
+    // Close search when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchContainer.contains(e.target) {
+            searchContainer.classList.remove('active');
+        }
+    });
+
+    // Prevent closing when clicking inside search
+    searchContainer.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+</script>
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="section-title">Select a Season</h1>
+        
+        <div class="season-list">
+            <a href="{% url 'plants_by_season' 'summer' %}" class="season-card">
+                <div class="season-icon"><i class="fas fa-sun"></i></div>
+                <h3 class="season-name">Summer</h3>
+                <p>Discover trees that thrive in warm weather</p>
+            </a>
+            
+            <a href="{% url 'plants_by_season' 'winter' %}" class="season-card">
+                <div class="season-icon"><i class="fas fa-snowflake"></i></div>
+                <h3 class="season-name">Winter</h3>
+                <p>Find trees that withstand cold temperatures</p>
+            </a>
+            
+            <a href="{% url 'plants_by_season' 'spring' %}" class="season-card">
+                <div class="season-icon"><i class="fas fa-seedling"></i></div>
+                <h3 class="season-name">Spring</h3>
+                <p>Explore trees with beautiful spring blooms</p>
+            </a>
+            
+            <a href="{% url 'plants_by_season' 'autumn' %}" class="season-card">
+                <div class="season-icon"><i class="fas fa-leaf"></i></div>
+                <h3 class="season-name">Autumn</h3>
+                <p>Enjoy trees with spectacular fall colors</p>
+            </a>
+        </div>
+
+        <a href="{% url 'homepage' %}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Homepage
+        </a>
+    </main>
+
+    <!-- Footer - matching homepage -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h3>About TreeMart</h3>
+                    <p>TreeMart is dedicated to providing high-quality trees and plants to enhance your outdoor spaces while promoting environmental sustainability.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'homepage' %}">Home</a></li>
+                        <li><a href="{% url 'tree_list' %}">Tree List</a></li>
+                        <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
+                        <li><a href="{% url 'inbox' %}">Chat</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Green Road, Dhaka</li>
+                        <li><i class="fas fa-phone"></i> 01817065225</li>
+                        <li><i class="fas fa-envelope"></i> info@treemart.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileMenu.classList.toggle('toggle');
+        });
+        
+        // Sticky Header
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
