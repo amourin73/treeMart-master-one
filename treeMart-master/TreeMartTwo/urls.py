@@ -18,6 +18,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+
+from accounts.views import api_login
 from . import views
 
 
@@ -29,6 +31,7 @@ urlpatterns = [
     path('plant_guide/', include('plant_guide.urls')),
     path('orders/', include('orders.urls')),
     path('chat/', include('chat.urls')),
+path('api/auth/login/', api_login, name='api_login'),
 
 
 

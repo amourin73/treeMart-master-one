@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+from .views import seasonal_recommendations
+
 urlpatterns = [
 
 
@@ -11,6 +13,7 @@ urlpatterns = [
     path('weather/', views.weather_check, name='weather'),
 path('api/weather', views.weather_api, name='weather_api'),
     path('api/recommend-trees', views.recommend_trees, name='recommend_trees'),
+path('api/products/seasonal/<str:season>/', seasonal_recommendations, name='seasonal_recommendations'),
 
 
 ]

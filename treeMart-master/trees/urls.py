@@ -17,12 +17,16 @@ Including another URLconf
 
 from django.urls import path,include
 from.import views
-
+from .views import create_tree, update_tree, delete_tree
 
 urlpatterns = [
+
+path('trees/add/', create_tree, name='add-tree'),
+    path('trees/update/<int:pk>/', update_tree, name='update-tree'),
+    path('trees/delete/<int:pk>/',  delete_tree, name='delete-tree'),
     path('create-tree', views.create_tree, name='create-tree'),
     path('update-tree/<int:t_id>', views.update_tree, name='update-tree'),
-    path('delete-tree/<int:t_id>', views.delete_tree, name='delete-tree'),
+    # path('delete-tree/<int:t_id>', views.delete_tree, name='delete-tree'),
     path('', views.tree_list, name='tree_list'),
 
     path('photos/', views.photo_list, name='photo_list'),

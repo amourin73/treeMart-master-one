@@ -25,6 +25,7 @@ class Tree(models.Model):
 
 
 
+
     @property
     def average_rating(self):
         """Calculate and return the average rating."""

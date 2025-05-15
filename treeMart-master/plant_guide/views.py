@@ -6,7 +6,50 @@ from django.http import JsonResponse
 import requests
 from django.views.decorators.csrf import csrf_exempt
 import json
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from .models import Tree
+import datetime
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def seasonal_recommendations(request, season):
+    """
+    Get tree recommendations based on season
+    """
+    month = timezone.now().month
+
+    # For Bangladesh's six seasons
+    season_mapping = {
+        'winter': {'months': [11, 12, 1, 2], 'tags': ['winter-hardy', 'evergreen']},
+        'spring': {'months': [3, 4], 'tags': ['flowering', 'fruit']},
+        'summer': {'months': [5, 6, 7], 'tags': ['drought-tolerant', 'heat-resistant']},
+        'monsoon': {'months': [7, 8], 'tags': ['water-loving', 'fast-growing']},
+        'autumn': {'months': [9, 10], 'tags': ['ornamental', 'colorful-foliage']},
+        'late-autumn': {'months': [10, 11], 'tags': ['fruit', 'nut']}
+    }
+
+    # Get tags for current season
+    tags = season_mapping.get(season.lower(), {}).get('tags', [])
+
+    # Get recommended trees
+    trees = Tree.objects.filter(tags__name__in=tags).distinct()[:8]
+
+    # If not enough, fallback to seasonal_suitability field
+    if trees.count() < 4:
+        trees = Tree.objects.filter(seasonal_suitability__contains=season.capitalize())[:8]
+
+    # Serialize the data
+    from .serializers import TreeSerializer
+    serializer = TreeSerializer(trees, many=True, context={'request': request})
+
+    return Response({
+        'season': season.capitalize(),
+        'recommendations': serializer.data
+    })
 
 def weather_api(request):
     print("Weather API endpoint hit!")  # Debugging

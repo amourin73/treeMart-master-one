@@ -4,6 +4,29 @@ from trees.models import Tree, Rating
 from trees.forms import TreeForm
 
 # Create your views here.
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import TreeForm
+from .models import Tree
+
+
+@login_required
+def add_tree(request):
+    if not (request.user.profile.is_admin or request.user.profile.is_seller):
+        return redirect('tree_list')
+
+    if request.method == 'POST':
+        form = TreeForm(request.POST, request.FILES)
+        if form.is_valid():
+            tree = form.save(commit=False)
+            tree.seller = request.user
+            tree.save()
+            return redirect('tree_list')
+    else:
+        form = TreeForm()
+
+    return render(request, 'treeform.html', {'form': form})
 def create_tree(request):
     if request.method == "POST":
         form = TreeForm(request.POST, request.FILES)
@@ -16,9 +39,9 @@ def create_tree(request):
     else:
         form = TreeForm()
 
-    return render(request, 'treeform.html', {'form': form})
+    return render(request, 'add_tree.html', {'form': form})
 
-
+@login_required
 def update_tree(request, t_id):
     tree_instance = get_object_or_404(Tree, pk=t_id)  # Handle 404 if tree not found
     if request.method == "POST":
@@ -34,10 +57,21 @@ def update_tree(request, t_id):
 
     return render(request, 'treeform.html', {'form': form})
 
-def delete_tree(request,t_id):
-    Tree.objects.get(pk=t_id).delete()
-    return redirect('tree_list')
 
+@login_required
+def delete_tree(request, pk):  # Make sure 'pk' is included as a parameter
+    tree = get_object_or_404(Tree, pk=pk)
+
+    # Check if user is admin or the tree's seller
+    if not (request.user.profile.is_admin or
+            (request.user.profile.is_seller and tree.seller == request.user)):
+        return redirect('tree_list')
+
+    if request.method == 'POST':
+        tree.delete()
+        return redirect('tree_list')
+
+    return render(request, 'delete_tree.html', {'tree': tree})
 
 
 def tree_list(request):

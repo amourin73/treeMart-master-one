@@ -888,7 +888,27 @@
                                 {% else %}
                                     <p>No specific tree recommendations available for these weather conditions.</p>
                                 {% endif %}
-                                
+                                <div class="eco-impact">
+  <h3>Your Environmental Impact</h3>
+  <div id="emissions-display"></div>
+  <div id="trees-planted-message"></div>
+</div>
+       
+                            <div class="eco-profile">
+  <h3>Your Green Impact</h3>
+  <p>🌱 Trees planted: <span id="trees-planted">0</span></p>
+  <p>🌍 Carbon offset: <span id="carbon-offset">0 tons</span></p>
+</div>
+                            
+                            <section class="seasonal-recommendations">
+  <h2>Seasonal Picks Just For You</h2>
+  <div id="seasonal-recommendations">
+    <!-- Filled dynamically by JavaScript -->
+  </div>
+</section>
+                            
+                            
+                            
                                 <div class="weather-tips" style="margin-top: 30px;">
                                     <h4><i class="fas fa-lightbulb"></i> Planting Tips for Current Weather</h4>
                                     <ul style="margin-top: 15px; padding-left: 20px;">
@@ -971,8 +991,318 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+    // Function to fetch and display seasonal recommendations
+    async function getSeasonalRecommendations() {
+        try {
+            // 1. Get user's location (using browser geolocation or default to city from weather search)
+            const location = await getUserLocation();
+            
+            // 2. Get current weather data from OpenWeatherMap API
+            const weatherResponse = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=YOUR_OPENWEATHER_API_KEY&units=metric`
+            );
+            const weatherData = await weatherResponse.json();
+            
+            // 3. Determine season based on weather
+            const season = getSeasonFromWeather(weatherData);
+            
+            // 4. Fetch seasonal products from your Django backend
+            const response = await fetch(`/api/products/seasonal/${season}/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch seasonal recommendations');
+            }
+            
+            const products = await response.json();
+            
+            // 5. Display the recommendations
+            displaySeasonalRecommendations(products, weatherData);
+            
+        } catch (error) {
+            console.error('Error getting seasonal recommendations:', error);
+            // Fallback to generic recommendations
+            displayGenericRecommendations();
+        }
+    }
+
+    // Helper function to get user location
+    async function getUserLocation() {
+        // Try browser geolocation first
+        if (navigator.geolocation) {
+            return new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    position => resolve({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    }),
+                    error => {
+                        console.error("Geolocation error:", error);
+                        // Fallback to default location (Dhaka)
+                        resolve({ lat: 23.8103, lon: 90.4125 });
+                    }
+                );
+            });
+        } else {
+            // Default to Dhaka coordinates if geolocation not available
+            return { lat: 23.8103, lon: 90.4125 };
+        }
+    }
+
+    // Determine season from weather data
+    function getSeasonFromWeather(weatherData) {
+        const temp = weatherData.main.temp;
+        const month = new Date().getMonth() + 1;
+        const weatherMain = weatherData.weather[0].main.toLowerCase();
+        
+        // Bangladesh has six seasons, but we'll simplify to four for recommendations
+        if (month >= 11 || month <= 2) {
+            return 'winter'; // Hemanta (late autumn) and Shhit (winter)
+        } else if (month >= 3 && month <= 5) {
+            return 'spring'; // Basanta (spring)
+        } else if (month >= 6 && month <= 8) {
+            return 'summer'; // Grishma (summer) and Barsha (monsoon)
+        } else {
+            return 'autumn'; // Sharat (autumn)
+        }
+    }
+
+    // Display seasonal recommendations
+    function displaySeasonalRecommendations(products, weatherData) {
+        const container = document.getElementById('seasonal-recommendations');
+        
+        if (!products || products.length === 0) {
+            container.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    No special seasonal recommendations available right now.
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = `
+            <h3>Perfect for ${getSeasonName(weatherData)}!</h3>
+            <div class="trees-grid">
+                ${products.map(product => `
+                    <div class="tree-card">
+                        ${product.ideal_for ? `
+                            <span class="tree-tag" style="background: ${getTagColor(product.ideal_for)};">
+                                <i class="${getTagIcon(product.ideal_for)}"></i> 
+                                ${getTagText(product.ideal_for)}
+                            </span>
+                        ` : ''}
+                        
+                        <img src="${product.image_url}" alt="${product.name}" class="tree-image">
+                        <div class="tree-card-content">
+                            <h5>${product.name}</h5>
+                            <p>$${product.price}</p>
+                            <p><small>${product.short_description || ''}</small></p>
+                            <div class="tree-specs">
+                                <div><i class="fas fa-temperature-low"></i> ${product.ideal_temperature || 'Various'}</div>
+                                <div><i class="fas fa-tint"></i> ${product.water_requirements || 'Moderate'}</div>
+                            </div>
+                            <a href="/trees/${product.id}/" class="btn btn-secondary">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </a>
+                            <a href="/trees/${product.id}/" class="btn btn-accent">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                        </div>
+                    </div>
+
+                `).join('')}
+                    <div class="recommendation-card">
+                        <h3><i class="fas fa-tree"></i> Recommended Trees</h3>
+                        <ul class="tree-list">
+                            {% for tree in tree %}
+                                <li class="tree-item">
+                                    <div class="tree-name">{{ tree.name }}</div>
+                                    <div class="tree-reason">{{ tree.reason }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            </div>
+        `;
+    }
+
+    // Helper functions for display
+    function getSeasonName(weatherData) {
+        const season = getSeasonFromWeather(weatherData);
+        const seasonNames = {
+            'winter': 'Winter Season',
+            'spring': 'Spring Season',
+            'summer': 'Summer Season',
+            'autumn': 'Autumn Season'
+        };
+        return seasonNames[season] || 'This Season';
+    }
+
+    function getTagColor(idealFor) {
+        const colors = {
+            'cold': '#0d47a1',
+            'mild': '#1b5e20',
+            'warm': '#f57f17',
+            'hot': '#bf360c',
+            'all': '#5c6bc0'
+        };
+        return colors[idealFor] || '#5c6bc0';
+    }
+
+    function getTagIcon(idealFor) {
+        const icons = {
+            'cold': 'fas fa-snowflake',
+            'mild': 'fas fa-cloud-sun',
+            'warm': 'fas fa-sun',
+            'hot': 'fas fa-fire',
+            'all': 'fas fa-check-circle'
+        };
+        return icons[idealFor] || 'fas fa-tree';
+    }
+
+    function getTagText(idealFor) {
+        const texts = {
+            'cold': 'Cold Hardy',
+            'mild': 'Mild Climate',
+            'warm': 'Warm Weather',
+            'hot': 'Heat Tolerant',
+            'all': 'All Seasons'
+        };
+        return texts[idealFor] || 'Recommended';
+    }
+
+    // Fallback display
+    function displayGenericRecommendations() {
+        const container = document.getElementById('seasonal-recommendations');
+        container.innerHTML = `
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> 
+                Here are some of our most popular trees this month:
+            </div>
+            <div class="trees-grid">
+                <!-- You could hardcode some fallback recommendations here -->
+            </div>
+        `;
+    }
+
+    // Call the function when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only show seasonal recommendations if user is authenticated
+        if (localStorage.getItem('access_token')) {
+            getSeasonalRecommendations();
+        }
+    });
+</script>
 
     <script>
+        
+        // Function to plant trees when a purchase is made
+async function plantTrees(orderTotal, userId) {
+  const treesToPlant = Math.floor(orderTotal / 10); // Plant 1 tree per $10 spent
+  if (treesToPlant < 1) return;
+
+  try {
+    const response = await fetch('https://public.ecologi.com/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer YOUR_ECOLOGI_API_KEY`
+      },
+      body: JSON.stringify({
+        name: `TreeMart Customer ${userId}`,
+        trees: treesToPlant,
+        // You can add more details like email if you have customer consent
+      })
+    });
+
+    const data = await response.json();
+    
+    if (response.ok) {
+      // Save this transaction in your database
+      await saveTreePlantingRecord(userId, treesToPlant, data.id);
+      return data;
+    } else {
+      console.error('Ecologi API error:', data);
+    }
+  } catch (error) {
+    console.error('Error planting trees:', error);
+  }
+}
+
+async function getSeasonalRecommendations() {
+  try {
+    // Get user location (you might get this from browser geolocation or user profile)
+    const location = await getUserLocation();
+    
+    // Get current weather
+    const weatherResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=YOUR_OPENWEATHER_API_KEY&units=metric`
+    );
+    const weatherData = await weatherResponse.json();
+    
+    // Determine seasonal products
+    const season = getSeasonFromWeather(weatherData);
+    const recommendations = await fetchSeasonalProducts(season);
+    
+    displayRecommendations(recommendations, weatherData);
+  } catch (error) {
+    console.error('Error getting weather data:', error);
+    // Fallback to generic recommendations
+    displayGenericRecommendations();
+  }
+}
+
+// Helper functions
+function getSeasonFromWeather(weatherData) {
+  const temp = weatherData.main.temp;
+  const weatherMain = weatherData.weather[0].main.toLowerCase();
+  
+  if (temp < 10) return 'winter';
+  if (temp > 25) return 'summer';
+  if (weatherMain.includes('rain')) return 'rainy';
+  return 'spring'; // default
+}
+
+async function fetchSeasonalProducts(season) {
+  // This would call your backend which queries products tagged with this season
+  const response = await fetch(`/api/products/seasonal/${season}`);
+  return await response.json();
+}
+
+function displayRecommendations(products, weatherData) {
+  const container = document.getElementById('seasonal-recommendations');
+  container.innerHTML = `
+    <h3>Perfect for ${weatherData.weather[0].description} weather!</h3>
+    <div class="product-grid">
+      ${products.map(p => `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}">
+          <h4>${p.name}</h4>
+          <p>$${p.price}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// Display tree planting impact on user profile
+async function displayUserImpact(userId) {
+  try {
+    const response = await fetch(`https://public.ecologi.com/users/${userId}/impact`);
+    const data = await response.json();
+    
+    document.getElementById('trees-planted').textContent = data.trees;
+    document.getElementById('carbon-offset').textContent = `${data.carbonOffset} tons`;
+  } catch (error) {
+    console.error('Error fetching impact data:', error);
+  }
+}
         // Mobile Menu Toggle
         const mobileMenu = document.getElementById('mobileMenu');
         const navLinks = document.getElementById('navLinks');

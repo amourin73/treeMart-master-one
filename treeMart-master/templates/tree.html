@@ -120,6 +120,27 @@
             box-shadow: 0 7px 14px rgba(0,0,0,0.15);
         }
         
+        .align-items-center {
+    align-items: center;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: var(--primary);
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+        
         .btn-outline {
             border: 2px solid var(--primary);
             color: var(--primary);
@@ -715,6 +736,12 @@
     <section class="main-section">
         <div class="container">
             <h2 class="section-title">Our Tree Collection</h2>
+                    {% if user.is_authenticated and user.profile.is_admin or user.profile.is_seller %}
+            <a href="{% url 'add-tree' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Tree
+            </a>
+            {% endif %}
+        </div>
             
             <!-- Loading Spinner -->
             <div id="loadingSpinner" class="loading-spinner">
