@@ -7,138 +7,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --primary: #1c3325;
-            --secondary: #8c6e4a;
-            --accent: #e7b25f;
-            --light: #f4f1eb;
-            --dark: #1b2d22;
-            --transition: all 0.3s ease-in-out;
+            --primary: #2e7d32;
+            --primary-light: #60ad5e;
+            --primary-dark: #005005;
+            --secondary: #ff9800;
+            --secondary-light: #ffc947;
+            --secondary-dark: #c66900;
+            --text: #333;
+            --text-light: #757575;
+            --bg-light: #f9f7f3;
+            --white: #fff;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .light-mode {
-            --bg-primary: var(--light);
-            --text-primary: var(--dark);
-            --bg-card: rgba(255, 255, 255, 0.9);
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        .dark-mode {
-            --bg-primary: var(--dark);
-            --text-primary: var(--light);
-            --bg-card: rgba(30, 45, 35, 0.9);
-            --shadow-color: rgba(0, 0, 0, 0.3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
             font-family: 'Poppins', sans-serif;
-            transition: var(--transition);
-            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
         }
 
-        /* Navbar Styles */
-        .navbar {
-            background-color: var(--primary);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            padding: 15px 8%;
-        }
-
-        .navbar-brand {
+        h1, h2, h3, h4, h5 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--light);
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 15px 0;
+            background-color: var(--primary-dark);
+        }
+
+        .header-scrolled {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+
+        .navbar {
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo-tree {
-            width: 100%;
-            height: 100%;
-            background: var(--accent);
-            border-radius: 0 50% 50% 50%;
-            transform: rotate(-45deg);
-        }
-
-        .navbar-brand span {
-            color: var(--accent);
-        }
-
-        .nav-link {
-            color: var(--light) !important;
-            text-transform: uppercase;
-            font-size: 1rem;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Playfair Display', serif;
             transition: var(--transition);
-            position: relative;
         }
 
-        .nav-link:after {
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .header-scrolled .logo {
+            color: var(--primary);
+            text-shadow: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .header-scrolled .nav-links a {
+            color: var(--text);
+        }
+
+        .nav-links a:after {
             content: '';
             position: absolute;
             width: 0;
             height: 2px;
-            background: var(--accent);
-            bottom: 0;
+            background: var(--secondary);
+            bottom: -5px;
             left: 0;
             transition: var(--transition);
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: var(--accent) !important;
-        }
-
-        .nav-link:hover:after {
+        .nav-links a:hover:after {
             width: 100%;
         }
 
-        .theme-toggle {
-            background: transparent;
-            border: 2px solid var(--light);
-            color: var(--light);
-            border-radius: 20px;
-            padding: 5px 15px;
+        .mobile-menu {
+            display: none;
             cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            transition: var(--transition);
-            margin-left: 15px;
         }
 
-        .theme-toggle:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--dark);
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--white);
+            margin: 5px;
+            transition: var(--transition);
+        }
+
+        .header-scrolled .mobile-menu div {
+            background-color: var(--text);
         }
 
         /* Form Container */
         .form-container {
-            width: 100%;
-            max-width: 700px;
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px var(--shadow-color);
+            max-width: 600px;
             margin: 50px auto;
-            border-top: 5px solid var(--accent);
+            padding: 40px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         .form-title {
-            font-family: 'Playfair Display', serif;
             font-size: 2rem;
-            color: var(--text-primary);
+            color: var(--primary-dark);
             margin-bottom: 30px;
             text-align: center;
             position: relative;
@@ -146,47 +164,48 @@
 
         .form-title:after {
             content: '';
+            height: 4px;
+            width: 70px;
+            background: var(--secondary);
             position: absolute;
-            width: 80px;
-            height: 3px;
-            background: var(--accent);
             bottom: -15px;
             left: 50%;
             transform: translateX(-50%);
+            border-radius: 2px;
         }
 
         /* Form Elements */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: var(--text-primary);
+            color: var(--primary-dark);
         }
 
         .form-control {
             width: 100%;
             padding: 12px 15px;
             font-size: 16px;
-            border: 2px solid #ddd;
+            border: 1px solid #ddd;
             border-radius: 8px;
             transition: var(--transition);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: var(--white);
+            color: var(--text);
         }
 
         .form-control:focus {
-            border-color: var(--accent);
+            border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(231, 178, 95, 0.2);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
         }
 
         .form-text {
             font-size: 0.875rem;
-            color: #6c757d;
+            color: var(--text-light);
         }
 
         .alert-danger {
@@ -217,188 +236,84 @@
 
         /* Buttons */
         .btn-submit {
-            font-family: 'Poppins', sans-serif;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--accent);
-            color: var(--dark);
-            border: none;
+            display: block;
             width: 100%;
-            margin-top: 10px;
+            padding: 12px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+            background: var(--primary);
+            color: var(--white);
+            margin-top: 20px;
         }
 
         .btn-submit:hover {
-            background: #d9a44f;
-            transform: translateY(-2px);
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
         }
-/* Header & Navigation - Matching Homepage */
-        header {
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-            transition: var(--transition);
-            padding: 15px 0;
-            background-color: var(--primary-dark);
-        }
-        
-        .header-scrolled {
-            background-color: var(--white);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 10px 0;
-        }
-        
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--white);
-            text-shadow: 2px 2px 4px rgba(246, 245, 245, 0.3);
-            font-family: 'Playfair Display', serif;
-            transition: var(--transition);
-        }
-        
-        .logo span {
-            color: var(--secondary);
-        }
-        
-        .header-scrolled .logo {
-            color: var(--primary);
-            text-shadow: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 30px;
-        }
-        
-        .nav-links a {
-            color: var(--white);
-            font-weight: 500;
-            position: relative;
-            transition: var(--transition);
-        }
-        
-        .header-scrolled .nav-links a {
-            color: var(--text);
-        }
-        
-        .nav-links a:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background: var(--secondary);
-            bottom: -5px;
-            left: 0;
-            transition: var(--transition);
-        }
-        
-        .nav-links a:hover:after {
-            width: 100%;
-        }
-        
-        .mobile-menu {
-            display: none;
-            cursor: pointer;
-        }
-        
-        .mobile-menu div {
-            width: 25px;
-            height: 3px;
-            background-color: var(--white);
-            margin: 5px;
-            transition: var(--transition);
-        }
-        
-        .header-scrolled .mobile-menu div {
-            background-color: var(--text);
-        }
-        
-        .search-container {
-            display: flex;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            overflow: hidden;
-            margin-left: 20px;
-            transition: var(--transition);
-        }
-        
-        .header-scrolled .search-container {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        
-        .search-input {
-            background: transparent;
-            border: none;
-            padding: 8px 15px;
-            color: var(--white);
-            font-family: 'Poppins', sans-serif;
-            width: 0;
-            transition: var(--transition);
-        }
-        
-        .header-scrolled .search-input {
-            color: var(--text);
-        }
-        
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .header-scrolled .search-input::placeholder {
-            color: var(--text-light);
-        }
-        
-        .search-container:focus-within {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .header-scrolled .search-container:focus-within {
-            background: rgba(0, 0, 0, 0.1);
-        }
-        
-        .search-container:focus-within .search-input {
-            width: 200px;
-        }
-        
-        .search-btn {
-            background: transparent;
-            border: none;
-            color: var(--white);
-            padding: 8px 15px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .header-scrolled .search-btn {
-            color: var(--text);
-        }
+
         /* Footer */
         footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 50px 0 20px;
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
-            color: var(--light);
-            background-color: var(--primary);
-            margin-top: auto;
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                height: calc(100vh - 70px);
+                width: 80%;
+                max-width: 300px;
+                background: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: right 0.3s ease-in;
+                box-shadow: -5px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 0 0 20px 0;
+            }
+            
+            .nav-links a {
+                color: var(--text) !important;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu {
+                display: block;
+                z-index: 100;
+            }
         }
     </style>
 </head>
-<body class="light-mode">
-       <!-- Header -->
+<body>
+    <!-- Header -->
     <header id="header">
         <div class="container navbar">
             <div class="logo">Tree<span>Mart</span></div>
@@ -406,7 +321,6 @@
                 <li><a href="{% url 'homepage' %}">Home</a></li>
                 <li><a href="{% url 'tree_list' %}">Tree List</a></li>
                 <li><a href="{% url 'plant_guide' %}">Plant Guide</a></li>
-                
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'inbox' %}">Chat</a></li>
                     <li><a href="{% url 'view_profile' %}">Profile</a></li>
@@ -415,18 +329,8 @@
                     <li><a href="{% url 'signup' %}">Sign Up</a></li>
                     <li><a href="{% url 'signin' %}">Sign In</a></li>
                 {% endif %}
-                <li><a href="{% url 'weather' %}" class="nav-link">Features</a></li>
+                <li><a href="{% url 'weather' %}">Features</a></li>
             </ul>
-            <div class="search-container">
-                <form method="GET" action="{% url 'tree_list' %}" class="search-form">
-                    <div class="search-input-group">
-                        <input type="text" name="q" class="search-input" placeholder="Search trees..." value="{{ request.GET.q }}">
-                        <button type="submit" class="search-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
             <div class="mobile-menu" id="mobileMenu">
                 <div class="line1"></div>
                 <div class="line2"></div>
@@ -436,75 +340,77 @@
     </header>
 
     <!-- Main Content -->
-    <div class="form-container">
-        <h2 class="form-title">Tree Form</h2>
-        
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+    <div class="container">
+        <div class="form-container">
+            <h2 class="form-title">Tree Form</h2>
             
-            {% for field in form %}
-                {% if field.name != 'rating' %}  <!-- Skip the rating field -->
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                        <small class="form-text">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            {% endfor %}
-            
-            <button type="submit" class="btn-submit">Submit</button>
-        </form>
-
-        <!-- Error Section -->
-        {% if form.errors %}
-        <div class="error-list">
-            <strong>Please fix the following errors:</strong>
-            <ul>
-                {% for field, errors in form.errors.items %}
-                    {% if field != 'rating' %}  <!-- Skip rating errors -->
-                    <li><strong>{{ field|title }}</strong>: {{ errors|join:", " }}</li>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    {% if field.name != 'rating' %}  <!-- Skip the rating field -->
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
                 {% endfor %}
-            </ul>
+                
+                <button type="submit" class="btn-submit">Submit</button>
+            </form>
+
+            <!-- Error Section -->
+            {% if form.errors %}
+            <div class="error-list">
+                <strong>Please fix the following errors:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% if field != 'rating' %}  <!-- Skip rating errors -->
+                        <li><strong>{{ field|title }}</strong>: {{ errors|join:", " }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 TreeMart. All rights reserved.</p>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2024 TreeMart. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Dark/Light theme toggle
-        const themeToggle = document.querySelector('.theme-toggle');
-        themeToggle.addEventListener('click', function() {
-            if (document.body.classList.contains('light-mode')) {
-                document.body.classList.remove('light-mode');
-                document.body.classList.add('dark-mode');
-                themeToggle.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark');
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileMenu.classList.toggle('toggle');
+        });
+        
+        // Sticky Header
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('header-scrolled');
             } else {
-                document.body.classList.remove('dark-mode');
-                document.body.classList.add('light-mode');
-                themeToggle.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light');
+                header.classList.remove('header-scrolled');
             }
         });
-
-        // Check for saved theme preference
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-            themeToggle.textContent = 'Light Mode';
-        }
     </script>
 </body>
 </html>
