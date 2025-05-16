@@ -758,18 +758,21 @@
                         <h3 class="card-title">{{ tree.name }}</h3>
                         <div class="card-price">${{ tree.price }}</div>
                         <div class="card-actions">
-                            <button onclick="loadTreeDetails({{ tree.id }})" class="btn btn-outline btn-sm">
-                                <i class="fas fa-info-circle"></i> Details
-                            </button>
-                            
+<form action="{% url 'add-to-cart' tree.id %}" method="POST" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline btn-sm">
+        <i class="fas fa-info-circle"></i> Add to Cart
+    </button>
+</form>
                             {% if user.is_authenticated %}
                                 {% if user.profile.is_admin or user.profile.is_seller and tree.seller == user %}
                                     <div class="d-flex justify-content-between mt-3">
+{#                                         <a href="{% url 'add-to-cart' tree.id %}" class="btn btn-success btn-sm mt-2">Add to Cart</a>#}
                                         <a href="{% url 'update-tree' tree.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
                                         <a href="{% url 'delete-tree' tree.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
                                     </div>
                                 {% elif user.profile.is_buyer %}
-                                    <a href="{% url 'add-to-cart' tree.id %}" class="btn btn-success btn-sm mt-2">Add to Cart</a>
+{#                                    <a href="{% url 'add-to-cart' tree.id %}" class="btn btn-success btn-sm mt-2">Add to Cart</a>#}
                                 {% endif %}
                             {% else %}
                                 <a href="{% url 'signin' %}" class="btn btn-primary btn-sm mt-2">Sign In to Purchase</a>
@@ -784,17 +787,17 @@
         </div>
     </section>
     
-    <!-- Handwritten Section -->
-    <section class="handwritten-section">
-        <div class="container">
-            <div class="handwritten-content">
-                <div class="handwritten-text">
-                    <h2 class="handwritten-title">Our Tree Story</h2>
-                    <div class="handwritten-note">
-                        <p>Every tree in our nursery has a story...</p>
-                        <p>We carefully select each sapling, nurture it with organic care, and watch it grow strong before offering it to you. Our team of passionate arborists hand-writes notes about each tree's unique characteristics, growth patterns, and ideal planting conditions.</p>
-                        <p>When you purchase a tree from TreeMart, you're not just getting a plant - you're getting years of loving care and expert knowledge to help your new green friend thrive in its forever home.</p>
-                    </div>
+{#    <!-- Handwritten Section -->#}
+{#    <section class="handwritten-section">#}
+{#        <div class="container">#}
+{#            <div class="handwritten-content">#}
+{#                <div class="handwritten-text">#}
+{#                    <h2 class="handwritten-title">Our Tree Story</h2>#}
+{#                    <div class="handwritten-note">#}
+{#                        <p>Every tree in our nursery has a story...</p>#}
+{#                        <p>We carefully select each sapling, nurture it with organic care, and watch it grow strong before offering it to you. Our team of passionate arborists hand-writes notes about each tree's unique characteristics, growth patterns, and ideal planting conditions.</p>#}
+{#                        <p>When you purchase a tree from TreeMart, you're not just getting a plant - you're getting years of loving care and expert knowledge to help your new green friend thrive in its forever home.</p>#}
+{#                    </div>#}
                     <div class="signature">
                         <p class="signature-text">The TreeMart Family</p>
                     </div>
