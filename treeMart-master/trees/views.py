@@ -125,7 +125,7 @@ def add_to_cart(request, t_id):
     # Save the updated cart back to the session
     request.session['cart'] = cart
 
-    return redirect('tree_list')
+    return redirect('view_cart')
 
 def clear_cart(request):
     request.session['cart'] = {}

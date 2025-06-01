@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -35,7 +35,7 @@ def signup(request):
         myuser.save()
 
         messages.success(request, "Your account has been successfully created.")
-        return redirect('signin')
+        return redirect('login')
 
     return render(request, "signup.html")
 def signin(request):
@@ -47,13 +47,12 @@ def signin(request):
 
         if user is not None:
             login(request, user)
-            return redirect('homepage')  # Redirect to home or another desired page
+            return redirect('homepage')
         else:
             messages.error(request, "Bad Credentials!")
-            return redirect('signin')  # Redirect back to signin on failure
+            return redirect('login')
 
     return render(request, "signin.html")
-
 def homepage(request):
     most_rated_trees = Tree.objects.annotate(
         annotated_average_rating=ExpressionWrapper(

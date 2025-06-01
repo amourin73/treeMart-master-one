@@ -710,7 +710,7 @@
                     <li><a href="{% url 'view_cart' %}">Cart</a></li>
                 {% else %}
                     <li><a href="{% url 'signup' %}">Sign Up</a></li>
-                    <li><a href="{% url 'signin' %}">Sign In</a></li>
+                    <li><a href="{% url 'login' %}">Sign In</a></li>
                 {% endif %}
                 <li><a href="{% url 'weather' %}" class="nav-link">Features</a></li>
             </ul>
@@ -775,7 +775,7 @@
 {#                                    <a href="{% url 'add-to-cart' tree.id %}" class="btn btn-success btn-sm mt-2">Add to Cart</a>#}
                                 {% endif %}
                             {% else %}
-                                <a href="{% url 'signin' %}" class="btn btn-primary btn-sm mt-2">Sign In to Purchase</a>
+                                <a href="{% url 'login' %}" class="btn btn-primary btn-sm mt-2">Sign In to Purchase</a>
                             {% endif %}
                         </div>
                     </div>

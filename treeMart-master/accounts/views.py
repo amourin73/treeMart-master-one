@@ -1,3 +1,10 @@
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.urls import reverse
+
+from accounts.forms import UserRegistrationForm
+
 from django.contrib import messages
 
 from django.shortcuts import render, redirect
@@ -28,85 +35,29 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
-
-
-@csrf_exempt
 def api_login(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
 
-            user = authenticate(request, username=username, password=password)
-
-            if user is not None:
-                login(request, user)
-                return JsonResponse({
-                    'status': 'success',
-                    'user': {
-                        'id': user.id,
-                        'username': user.username
-                    }
-                })
-            else:
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Invalid credentials'
-                }, status=401)
-
-        except json.JSONDecodeError:
+        if user is not None:
+            login(request, user)
             return JsonResponse({
-                'status': 'error',
-                'message': 'Invalid JSON'
-            }, status=400)
-
+                'status': 'success',
+                'redirect': reverse('homepage'),
+                'csrf_token': get_token(request)
+            })
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid credentials'
+        }, status=401)
     return JsonResponse({
         'status': 'error',
         'message': 'Method not allowed'
     }, status=405)
 
-from django.contrib.auth.models import User
 
-# class UserRegistrationForm(forms.ModelForm):
-
-#     password = forms.CharField(widget=forms.PasswordInput)
-
-#
-
-#     class Meta:
-
-#         model = User
-
-#         fields = ['username', 'password', 'email']
-
-#
-
-# def register(request):
-
-#     if request.method == 'POST':
-
-#         form = UserRegistrationForm(request.POST)
-
-#         if form.is_valid():
-
-#             user = form.save(commit=False)
-
-#             user.set_password(form.cleaned_data['password'])
-
-#             user.save()
-
-#             Profile.objects.create(user=user, is_normal_user=True)
-
-#             login(request, user)
-
-#             return redirect('home')
-
-#     else:
-
-#         form = UserRegistrationForm()
-
-#     return render(request, 'register.html', {'form': form})
 
 
 

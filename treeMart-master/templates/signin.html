@@ -201,17 +201,20 @@
     <div class="login-container">
         <h2 class="login-title">Sign In to TreeMart</h2>
         
-        <form id="loginForm">
+        <form id="loginForm" action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                <div id="usernameError" class="error-message"></div>
+{#                <div id="usernameError" class="error-message"></div>#}
             </div>
             
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 <div id="passwordError" class="error-message"></div>
+                <!-- Add this near your form -->
+<div id="authError" class="error-message" style="display: none;"></div>
             </div>
             
             <button type="submit" class="login-btn" id="submitBtn">
@@ -223,86 +226,37 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Clear previous errors
-            document.getElementById('usernameError').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
-            
-            const formData = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
-            };
-            
-            // UI updates
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            document.getElementById('btnText').innerHTML = '<span class="loading"></span> Signing In...';
-            
-            try {
-                const response = await axios.post('/api/auth/login/', formData, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                });
-                
-                // Store tokens
-                localStorage.setItem('access_token', response.data.access);
-                localStorage.setItem('refresh_token', response.data.refresh);
-                
-                // Set default Authorization header for future requests
-                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
-                
-                // Redirect to dashboard
-                window.location.href = "{% url 'homepage' %}";
-            } catch (error) {
-                // Reset button state
-                submitBtn.disabled = false;
-                document.getElementById('btnText').textContent = 'Sign In';
-                
-                if (error.response) {
-                    // Server responded with error status
-                    const errorData = error.response.data;
-                    
-                    if (error.response.status === 400) {
-                        // Validation errors
-                        if (errorData.username) {
-                            const usernameError = document.getElementById('usernameError');
-                            usernameError.textContent = errorData.username[0];
-                            usernameError.style.display = 'block';
-                        }
-                        if (errorData.password) {
-                            const passwordError = document.getElementById('passwordError');
-                            passwordError.textContent = errorData.password[0];
-                            passwordError.style.display = 'block';
-                        }
-                    } else if (error.response.status === 401) {
-                        // Authentication failed
-                        const passwordError = document.getElementById('passwordError');
-                        passwordError.textContent = errorData.detail || 'Invalid username or password';
-                        passwordError.style.display = 'block';
-                    } else {
-                        // Other server errors
-                        const passwordError = document.getElementById('passwordError');
-                        passwordError.textContent = 'An error occurred. Please try again.';
-                        passwordError.style.display = 'block';
-                    }
-                } else if (error.request) {
-                    // Request was made but no response received
-                    const passwordError = document.getElementById('passwordError');
-                    passwordError.textContent = 'Network error. Please check your connection.';
-                    passwordError.style.display = 'block';
-                } else {
-                    // Something else happened
-                    console.error('Error:', error.message);
-                    const passwordError = document.getElementById('passwordError');
-                    passwordError.textContent = 'An unexpected error occurred.';
-                    passwordError.style.display = 'block';
-                }
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    try {
+        const response = await fetch('/api/auth/login/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
             }
         });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            window.location.href = data.redirect;
+        } else {
+            // Show error message
+            const errorElement = document.getElementById('authError');
+            errorElement.textContent = data.message || 'Login failed';
+            errorElement.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        const errorElement = document.getElementById('authError');
+        errorElement.textContent = 'Network error. Please try again.';
+        errorElement.style.display = 'block';
+    }
+});
         
         // Helper function to get CSRF token
         function getCookie(name) {
@@ -328,5 +282,107 @@
             {% endfor %}
         </script>
     {% endif %}
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Clear previous errors
+        document.getElementById('usernameError').style.display = 'none';
+        document.getElementById('passwordError').style.display = 'none';
+
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        const formData = {
+            username: usernameInput.value.trim(),
+            password: passwordInput.value
+        };
+
+        // UI updates
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+
+        const btnText = document.getElementById('btnText');
+        btnText.innerHTML = `<span class="loading"></span> Signing In...`;
+
+        try {
+            const csrfToken = getCookie('csrftoken');
+
+            const response = await axios.post('/api/auth/login/', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken || ''
+                }
+            });
+
+            // Store tokens
+            localStorage.setItem('access_token', response.data.access);
+            localStorage.setItem('refresh_token', response.data.refresh);
+
+            // Set default Authorization header
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
+
+            // Redirect on successful login
+            window.location.href = "{% url 'homepage' %}";
+        } catch (error) {
+            submitBtn.disabled = false;
+            btnText.textContent = 'Sign In';
+
+            if (error.response) {
+                const errorData = error.response.data;
+
+                if (error.response.status === 400) {
+                    if (errorData.username) {
+                        showError('usernameError', errorData.username[0]);
+                    }
+                    if (errorData.password) {
+                        showError('passwordError', errorData.password[0]);
+                    }
+                } else if (error.response.status === 401) {
+                    showError('passwordError', errorData.detail || 'Invalid username or password');
+                } else {
+                    showError('passwordError', 'An error occurred. Please try again.');
+                }
+            } else if (error.request) {
+                showError('passwordError', 'Network error. Please check your connection.');
+            } else {
+                console.error('Error:', error.message);
+                showError('passwordError', 'An unexpected error occurred.');
+            }
+        }
+    });
+
+    function showError(elementId, message) {
+        const el = document.getElementById(elementId);
+        el.textContent = message;
+        el.style.display = 'block';
+    }
+
+    // CSRF token getter
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    </script>
+{% endif %}
+
 </body>
 </html>
