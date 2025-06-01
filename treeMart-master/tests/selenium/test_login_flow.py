@@ -6,8 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (NoSuchElementException,
-                                      TimeoutException,
-                                      UnexpectedAlertPresentException)
+                                        TimeoutException,
+                                        UnexpectedAlertPresentException)
 from django.urls import reverse
 from django.test import LiveServerTestCase
 from django.contrib.auth import get_user_model
@@ -237,12 +237,14 @@ class TestNavbarNavigation(LiveServerTestCase):
         super().tearDownClass()
 
     def setUp(self):
-        """Reset browser state between tests"""
+        """Reset browser state and login before each test"""
         try:
             alert = self.driver.switch_to.alert
             alert.accept()
         except:
             pass
+
+        # Clear cookies and existing user
         self.driver.delete_all_cookies()
         User.objects.filter(username=self.test_username).delete()
 
@@ -253,21 +255,22 @@ class TestNavbarNavigation(LiveServerTestCase):
             password=self.test_password
         )
 
-    def login(self):
-        """Helper method to login"""
+        # Perform login
         self.driver.get(f"{self.live_server_url}{reverse('login')}")
         self.driver.find_element(By.NAME, "username").send_keys(self.test_username)
         self.driver.find_element(By.NAME, "password").send_keys(self.test_password)
         self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        # Wait for login to complete
         WebDriverWait(self.driver, 5).until(
             lambda d: any(c['name'] == 'sessionid' for c in d.get_cookies()))
+
+        # Start each test from homepage
+        self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
 
     def test_7_navbar_home_link(self):
         """Test Home link in navbar"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Home link in navbar and click it
             home_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'nav-link') and contains(text(), 'Home')]"))
@@ -286,9 +289,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_8_navbar_tree_list_link(self):
         """Test Tree List link in navbar"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Tree List link in navbar and click it
             tree_list_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable(
@@ -308,9 +308,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_9_navbar_plant_guide_link(self):
         """Test Plant Guide link in navbar"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Plant Guide link in navbar and click it
             plant_guide_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable(
@@ -330,9 +327,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_10_navbar_chat_link(self):
         """Test Chat link in navbar (authenticated user)"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Chat link in navbar and click it
             chat_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'nav-link') and contains(text(), 'Chat')]"))
@@ -351,9 +345,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_11_navbar_profile_link(self):
         """Test Profile link in navbar (authenticated user)"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Profile link in navbar and click it
             profile_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable(
@@ -373,9 +364,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_12_navbar_cart_link(self):
         """Test Cart link in navbar (authenticated user)"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Cart link in navbar and click it
             cart_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'nav-link') and contains(text(), 'Cart')]"))
@@ -394,9 +382,6 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_13_navbar_features_link(self):
         """Test Features link in navbar"""
         try:
-            self.login()
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
-
             # Find Features link in navbar and click it
             features_link = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable(
@@ -416,8 +401,16 @@ class TestNavbarNavigation(LiveServerTestCase):
     def test_14_navbar_signup_login_links_logged_out(self):
         """Test Sign Up and Sign In links in navbar when logged out"""
         try:
-            # Don't login for this test
-            self.driver.get(f"{self.live_server_url}{reverse('homepage')}")
+            # First log out
+            logout_link = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//a[contains(@class, 'nav-link') and contains(text(), 'Logout')]"))
+            )
+            logout_link.click()
+
+            # Wait for logout to complete
+            WebDriverWait(self.driver, 5).until(
+                lambda d: not any(c['name'] == 'sessionid' for c in d.get_cookies()))
 
             # Find Sign Up link in navbar and click it
             signup_link = WebDriverWait(self.driver, 10).until(
